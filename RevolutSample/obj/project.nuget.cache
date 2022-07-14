@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "dgSpecHash": "Zvo/lWVChVYbESh34y9UJlayKMIYrjVM+8x8nYkPvdQ3fMN6Qcvig8Bl9OxAZjimfWbpvySDZrgirVFFkgcL7g==",
+  "success": true,
+  "projectFilePath": "D:\\Users\\nasarat.khan\\source\\repos\\RevolutSampleApp\\RevolutSample\\RevolutSample.csproj",
+  "expectedPackageFiles": [
+    "D:\\Users\\nasarat.khan\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "D:\\Users\\nasarat.khan\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "D:\\Users\\nasarat.khan\\.nuget\\packages\\newtonsoft.json\\12.0.1\\newtonsoft.json.12.0.1.nupkg.sha512",
+    "D:\\Users\\nasarat.khan\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.1\\swashbuckle.aspnetcore.6.2.1.nupkg.sha512",
+    "D:\\Users\\nasarat.khan\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.1\\swashbuckle.aspnetcore.swagger.6.2.1.nupkg.sha512",
+    "D:\\Users\\nasarat.khan\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.1\\swashbuckle.aspnetcore.swaggergen.6.2.1.nupkg.sha512",
+    "D:\\Users\\nasarat.khan\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.1\\swashbuckle.aspnetcore.swaggerui.6.2.1.nupkg.sha512"
+  ],
+  "logs": []
+}

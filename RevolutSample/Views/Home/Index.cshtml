@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Revolut Checkout";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Webpack and Revolut</title>
+    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+</body>
+</html>
+@*<head>
+    <meta charset="utf-8" />*@
+    @*@Html.Raw("<script src='https://unpkg.com/browse/@revolut/checkout@1.1.1/cjs/index.js'></script>")
+        <script type="module" src="~/node_modules/@@revolut/checkout/cjs/index.js"></script>*@
+
+    @*<script type="importmap">
+            {
+              "imports": {
+                "@revolut/checkout": "https://unpkg.com/browse/@revolut/checkout@1.1.1/cjs/index.js"
+              }
+            }
+        </script>*@
+    @*<title>Shop</title>
+        <script>
+            !function (e, o, t) {
+                e[t] = function (n, r) {
+                    var c = {
+                        sandbox: "https://sandbox-merchant.revolut.com/embed.js",
+                        prod: "https://merchant.revolut.com/embed.js", dev: "https://merchant.revolut.codes/embed.js"
+                    }, d = o.createElement("script"); d.id = "revolut-checkout", d.src = c[r] || c.prod, d.async = !0, o.head.appendChild(d); var s = { then: function (r, c) { d.onload = function () { r(e[t](n)) }, d.onerror = function () { o.head.removeChild(d), c && c(new Error(t + " is failed to load")) } } }; return "function" == typeof Promise ? Promise.resolve(s) : s
+                }
+            }(window, document, "RevolutCheckout");</script>*@
+
+    @*<script>var exports = {};</script>*@
+    @*<script type="module" src="~/js/cjs/checks.js"></script>
+    <script type="module" src="~/js/cjs/constants.js"></script>
+    <script type="module" src="~/js/cjs/index.js"></script>
+    <script type="module" src="~/js/cjs/loader.js"></script>
+    <script type="module" src="~/js/cjs/paymentsLoader.js"></script>
+    <script type="module" src="~/js/cjs/types.js"></script>
+
+
+    <script type="module" src="~/js/main.js"></script>*@
+
+
+@*</head>*@
+
+@*<div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>*@
+
+@*<div id="revolut-pay2.0"></div>*@
