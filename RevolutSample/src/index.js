@@ -14,9 +14,9 @@ async function component() {
         var createOrder = {
             amount: 908,
             captureMode: 0,
-            merchantOrderExtRef: "myOrderRef1",
+            merchantOrderExtRef: "OrderIDfromFP",
             customerEmail: "nasarathkhan@gmail.com",
-            description: "FP Purchase",
+            description: "NEW FP Purchase",
             currency: "GBP",
             settlementCurrency: "GBP",
             merchantCustomerExtRef: "myOrderRef1"      
@@ -100,7 +100,7 @@ const { revolutPay } = await RevolutCheckout.payments({
 
                             retrivedOrder = data;
                             if (retrivedOrder.state === "COMPLETED")
-                                alert('Order retrieved successfully with status completed');
+                                alert('Order retrieved successfully');
                         },
                         error: function (data) {
                             alert('error');
