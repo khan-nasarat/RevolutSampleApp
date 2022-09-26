@@ -1,128 +1,167 @@
-﻿// Step 1
-import RevolutCheckout from '@revolut/checkout'
-
-async function component() {   
- 
-    console.log("in index.js inside component")
-    let orderId = "Value"
-
-  async function create() {
-
-        console.log("in index.js create async function")
-        var result;
-
-        var createOrder = {
-            amount: 908,
-            captureMode: 0,
-            merchantOrderExtRef: "OrderIDfromFP",
-            customerEmail: "nasarathkhan@gmail.com",
-            description: "NEW FP Purchase",
-            currency: "GBP",
-            settlementCurrency: "GBP",
-            merchantCustomerExtRef: "myOrderRef1"      
+﻿import RevolutCheckout from '@revolut/checkout'
+var public_Id;
+var orderId;
+var widgetRevolut;
+// Set up revolut pay globally
+const revolutPay = (async () => {
+    var basketData = await getBasketData();
+    const data = await RevolutCheckout.payments({
+        local: 'en',
+        mode: basketData.Mode,
+        publicToken: basketData.PublicToken
+    });
+    return data
+})()
+async function getBasketData() {
+    var result;
+    $.ajax({
+        url: "/Pages/Basket.aspx/GetBasketTotal",
+        contentType: 'application/json',
+        type: "POST",
+        async: false,
+        success: function (data) {
+            result = data.d;
+        },
+        error: function (data) {
         }
-
-        console.log("in index.js making ajax call")
-
-        $.ajax({            
-            url: "/revolut/create",
-            data: JSON.stringify(createOrder),
-            contentType: 'application/json',
-            type: "POST",
-            async: false,
-            success: function (data) { 
-
-                console.log(data)
-                orderId = data.value.id
-                console.log(data.value.publicId)
-                result = data;
-            },
-            error: function (data) {
-                alert('error');
-            }
-        });
-
-        return result;
-    }
-
-// Step 3
-const { revolutPay } = await RevolutCheckout.payments({
-    local: 'en',
-    mode: 'sandbox',
-    publicToken: "pk_xvYW2jXVjl6uIECsoMotSc58HZNEIwl2X5DUugsLOrprGVf1" 
-})
-    console.log("in index.js after importing revolut")
-
+    });
+    return result;
+}
+// Entry point
+async function component() {
+    // initial bakset load, recreate basket set to false
+    createRevolutPayment(false)
+}
+// Basket has been reloaded with new payment
+function reloadBasket() {
+    console.log('reloadBasket call..')
+    // now have an updated payment amount and recreate basket set to true
+    createRevolutPayment(true)
+}
+// Mounts the widget
+async function createRevolutPayment(recreateBasket) {
+    console.log('createRevolutPayment 1')
+    var basketData = await getBasketData();
+    // call create order endpoint with currency, amount
     const paymentOptions = {
-        currency: "GBP", totalAmount: 908, createOrder: async () => {
-
-            console.log("before create method")
-            var order = await create()
-            
-            console.log(order.value.Id)
-            console.log(order.value.publicId)
-
-            return { publicId: order.value.publicId }
-
-            //await create().then(order => {
-            //    console.log(order.value.publicId)
-            //    return { publicId: order.value.publicId }
-            //});       
+        buttonStyle: {
+            cashback: false
+        },
+        currency: basketData.CurrencyCode, totalAmount: basketData.BasketTotal, createOrder: async () => {
+            await create()
+            return { publicId: public_Id }
         }
     }
-
-    let target = document.getElementById("revolut-pay2.0")
-    //Step 2
-    revolutPay.mount(target, paymentOptions)
-
-    //Step 4
-    revolutPay.on("payment", (event) => {
-
-        var retrivedOrder;
+    // No need to recreate the basket so just mount and make payment
+    if (!recreateBasket) {
+        await revolutPay.then((value) => {
+            // mount the widget
+            mount(value.revolutPay, paymentOptions);
+            // listen to payment event
+            // makePayment(value.revolutPay)
+            widgetRevolut = value.revolutPay
+        });
+    }
+    // Basket needs to be recreated
+    else {
+        console.log('recreateBasket 1')
+        await revolutPay.then((value) => {
+            // destory original instance of widget which will contain old payment amount
+            console.log('recreateBasket 2', value)
+            value.revolutPay.destroy();
+            // mount a new instance with new payment amount
+            mount(value.revolutPay, paymentOptions);
+            // makePayment(value.revolutPay)
+            widgetRevolut = value.revolutPay;
+        })
+    }
+}
+// Mount the widget with payment options
+function mount(widget, paymentOptions) {
+    // assign to div tag where we want widget to display
+    let div = document.getElementById("revolut-pay2.0")
+    // mount
+    widget.mount(div, paymentOptions)
+    widget.on("payment", (event) => {
+        console.log(event);
         switch (event.type) {
             case "cancel": {
-                alert("User cancelled at: " + event.dropOffState);
                 break;
             }
             case "success":
-                {
-                    var retrieveOrder = {
-                        orderId: orderId
+                $.ajax({
+                    url: "/Pages/Payment/Revolut/RevolutWebMethods.aspx/RetriveOrder",
+                    data: '{"orderId": "' + orderId + '"}',
+                    contentType: 'application/json',
+                    type: "POST",
+                    async: false,
+                    success: function (data) {
+                        location.href = data.d.returnURL;
                     }
-
-                    $.ajax({
-                        url: "/revolut/retrieve",
-                        data: retrieveOrder,
-                        contentType: 'application/json',
-                        type: "GET",
-                        async: false,
-                        success: function (data) {
-
-                            retrivedOrder = data;
-                            if (retrivedOrder.state === "COMPLETED")
-                                alert('Order retrieved successfully');
-                        },
-                        error: function (data) {
-                            alert('error');
-                        }
-                    });
-                    console.log(retrivedOrder)
-                    alert("Payment with Revpay2 successful");
-
-                    break;
-                }
+                });
+                break;
             case "error":
-               alert(
-                    "Something went wrong with RevolutPay 2.0:" + event.error
-                );
+                location.href = "/" + __countryCode + "pages/payment/PaymentError.aspx?IssueDetails=&ErrorDetails=" + event.error.message;
                 break;
             default: {
-                console.log(event);
+                break;
+                // var errorMes = "Please use a different payment method to checkout";
+                //location.href = "/" + __countryCode + "pages/payment/PaymentError.aspx?IssueDetails=&ErrorDetails=" + errorMes;
             }
         }
     });
- }
-
+    // create button to mimic a basket reload event and add click to invoke reload basket function - can be done earlier
+    document.getElementById("reloadBasket").addEventListener('click', reloadBasket)
+}
+// Handle payment event
+async function makePayment(widget) {
+    widget.on("payment", (event) => {
+        console.log(event);
+        switch (event.type) {
+            case "cancel": {
+                break;
+            }
+            case "success":
+                $.ajax({
+                    url: "/Pages/Payment/Revolut/RevolutWebMethods.aspx/RetriveOrder",
+                    data: '{"orderId": "' + orderId + '"}',
+                    contentType: 'application/json',
+                    type: "POST",
+                    async: false,
+                    success: function (data) {
+                        location.href = data.d.returnURL;
+                    }
+                });
+                break;
+            case "error":
+                location.href = "/" + __countryCode + "pages/payment/PaymentError.aspx?IssueDetails=&ErrorDetails=" + event.error.message;
+                break;
+            default: {
+                break;
+                // var errorMes = "Please use a different payment method to checkout";
+                //location.href = "/" + __countryCode + "pages/payment/PaymentError.aspx?IssueDetails=&ErrorDetails=" + errorMes;
+            }
+        }
+    });
+}
+// Call create order in Payment Module which will invoke Revolut API
+async function create() {
+    $.ajax({
+        url: "/Pages/Payment/Revolut/RevolutWebMethods.aspx/CreateOrder",
+        contentType: 'application/json',
+        type: "POST",
+        async: false,
+        success: function (data) {
+            if (data.d.isAuthorized === true)
+                location.href = data.d.returnURL;
+            else {
+                public_Id = data.d.Public_Id;
+                orderId = data.d.Id;
+                // makePayment(widgetRevolut)
+            }
+        },
+        error: function (data) {
+        }
+    });
+}
 document.body.appendChild(component());
-
-

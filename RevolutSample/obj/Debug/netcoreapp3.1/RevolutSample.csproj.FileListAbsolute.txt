@@ -87,3 +87,5 @@ D:\Users\nasarat.khan\source\repos\RevolutSampleApp\RevolutSample\obj\Debug\netc
 D:\Users\nasarat.khan\source\repos\RevolutSampleApp\RevolutSample\obj\Debug\netcoreapp3.1\RevolutSample.dll
 D:\Users\nasarat.khan\source\repos\RevolutSampleApp\RevolutSample\obj\Debug\netcoreapp3.1\RevolutSample.pdb
 D:\Users\nasarat.khan\source\repos\RevolutSampleApp\RevolutSample\obj\Debug\netcoreapp3.1\RevolutSample.genruntimeconfig.cache
+D:\Users\nasarat.khan\source\repos\RevolutSampleApp\RevolutSample\obj\Debug\netcoreapp3.1\RevolutSample.csproj.AssemblyReference.cache
+D:\Users\nasarat.khan\source\repos\RevolutSampleApp\RevolutSample\obj\Debug\netcoreapp3.1\RevolutSample.GeneratedMSBuildEditorConfig.editorconfig
